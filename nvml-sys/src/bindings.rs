@@ -8010,16 +8010,3 @@ extern "C" {
         info: *mut nvmlBlacklistDeviceInfo_t,
     ) -> nvmlReturn_t;
 }
-extern "C" {
-    pub fn nvmlInit_dl() -> nvmlReturn_t;
-}
-extern "C" {
-    pub fn nvmlShutdown_dl() -> nvmlReturn_t;
-}
-extern "C" {
-    pub fn nvmlDeviceGetTopologyCommonAncestor_dl(
-        arg1: nvmlDevice_t,
-        arg2: nvmlDevice_t,
-        arg3: *mut nvmlGpuTopologyLevel_t,
-    ) -> nvmlReturn_t;
-}

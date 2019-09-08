@@ -1,28 +1,33 @@
-extern crate bindgen;
-
-// use std::env;
 use std::path::PathBuf;
 
 fn main() {
-    // Tell cargo to tell rustc to link the system bzip2
-    // shared library.
-    println!("cargo:rustc-link-lib=dl");
+    println!("cargo:rustc-cdylib-link-arg=-Wl,--unresolved-symbols=ignore-in-object-files");
+    println!("cargo:include=nvml-sys/include");
+    println!("cargo:rustc-link-lib=dylib=nvidia-ml");
 
-    // The bindgen::Builder is the main entry point
-    // to bindgen, and lets you build up options for
-    // the resulting bindings.
+    let library_directories = vec!["/usr/lib"];
+    for library_directory in library_directories {
+        if let Ok(entry) = std::fs::read_dir(&library_directory) {
+            for dir in entry {
+                if let Ok(dir) = dir {
+                    let path: std::path::PathBuf = dir.path();
+                    if !path.is_dir() {
+                        continue;
+                    }
+                    let path = path.to_str().unwrap();
+                    if path.contains("nvidia") {
+                        println!("cargo:rustc-link-search=native={}", path);
+                    }
+                }
+            }
+        }
+    }
+
     let bindings = bindgen::Builder::default()
-        // The input header we would like to generate
-        // bindings for.
-        .header("nvml/nvml.h")
-        .header("nvml/nvml_dl.h")
-        // Finish the builder and generate the bindings.
+        .header("include/nvml.h")
         .generate()
-        // Unwrap the Result and panic on failure.
         .expect("Unable to generate bindings");
 
-    // Write the bindings to the $OUT_DIR/bindings.rs file.
-    // let out_path = PathBuf::from(env::var("OUT_DIR").unwrap());
     let out_path = PathBuf::from("src");
     bindings
         .write_to_file(out_path.join("bindings.rs"))

@@ -1,5 +1,5 @@
 [package]
-name = "nvml-rs"
+name = "nvml"
 version = "0.1.0"
 authors = ["sihao"]
 edition = "2018"
@@ -13,5 +13,9 @@ nvml-sys = {path = "nvml-sys"}
 [workspace]
 members = [
     "nvml-sys",
+    "nvml-examples",
 ]
 
+[[bin]]
+name = "nvml-examples"
+path = "nvml-examples/src/main.rs"

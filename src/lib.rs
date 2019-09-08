@@ -1,3 +1,4 @@
+#[link(name = "nvidia-ml")]
 use nvml_sys::bindings::nvmlBAR1Memory_t;
 use nvml_sys::bindings::nvmlClockType_enum_NVML_CLOCK_MEM;
 use nvml_sys::bindings::nvmlClockType_enum_NVML_CLOCK_SM;
@@ -18,7 +19,6 @@ use nvml_sys::bindings::nvmlMemory_t;
 use nvml_sys::bindings::nvmlPciInfo_t;
 use nvml_sys::bindings::nvmlReturn_enum_NVML_ERROR_NOT_SUPPORTED;
 use nvml_sys::bindings::nvmlReturn_enum_NVML_SUCCESS;
-use nvml_sys::bindings::nvmlReturn_t;
 use nvml_sys::bindings::nvmlSystemGetDriverVersion;
 use nvml_sys::bindings::NVML_DEVICE_NAME_BUFFER_SIZE;
 use nvml_sys::bindings::NVML_DEVICE_UUID_BUFFER_SIZE;
@@ -32,9 +32,9 @@ type ProcessOneInterger =
 pub struct NVML;
 
 impl NVML {
-    fn new() -> Result<NVML, String> {
+    pub fn new() -> Result<NVML, String> {
         unsafe {
-            let result = nvml_sys::bindings::nvmlInit_dl();
+            let result = nvml_sys::bindings::nvmlInit_v2();
             if result == nvml_sys::bindings::nvmlReturn_enum_NVML_ERROR_LIBRARY_NOT_FOUND {
                 return Err(format!("could not local NVML library"));
             }
@@ -45,7 +45,7 @@ impl NVML {
         }
     }
 
-    fn device_get_count(&self) -> Result<i32, String> {
+    pub fn device_get_count(&self) -> Result<i32, String> {
         unsafe {
             let mut n: ::std::os::raw::c_uint = 0;
             let result = nvml_sys::bindings::nvmlDeviceGetCount_v2(&mut n as *mut u32);
@@ -56,7 +56,7 @@ impl NVML {
         }
     }
 
-    fn nvml_system_get_driver_version(&self) -> Result<String, String> {
+    pub fn nvml_system_get_driver_version(&self) -> Result<String, String> {
         unsafe {
             let mut driver: [::std::os::raw::c_char;
                 NVML_SYSTEM_DRIVER_VERSION_BUFFER_SIZE as usize] =
@@ -77,7 +77,7 @@ impl NVML {
 impl Drop for NVML {
     fn drop(&mut self) {
         unsafe {
-            nvml_sys::bindings::nvmlShutdown_dl();
+            nvml_sys::bindings::nvmlShutdown();
         }
     }
 }
@@ -183,9 +183,6 @@ impl Device {
         match std::fs::read_to_string(&filepath) {
             Ok(content) => match content.parse() {
                 Ok(node) => {
-                    if node < 0 {
-                        return Ok(0);
-                    }
                     return Ok(node);
                 }
                 Err(e) => return Err(format!("{}", e)),
