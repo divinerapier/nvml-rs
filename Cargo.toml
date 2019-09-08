@@ -1,13 +1,20 @@
 [package]
 name = "nvml"
 version = "0.1.0"
-authors = ["sihao"]
+authors = ["divinerapier <poriter.coco@gmail.com>"]
 edition = "2018"
+publish = true
+repository = "https://github.com/divinerapier/nvml-rs"
+description = "A rust binding of libnvidia-ml"
+license = "Apache-2.0"
+categories = ["nvidia", "gpu"]
+keyworks = ["nvidia", "gpu"]
+include = ["Cargo.toml", "src/**/*.rs", "README.md", "LICENSE", "nvml-examples", "nvml-sys"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-nvml-sys = {path = "nvml-sys"}
+nvml-sys = {path = "nvml-sys", version = "0.1.0"}
 
 
 [workspace]
