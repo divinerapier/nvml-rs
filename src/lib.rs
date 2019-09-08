@@ -1,41 +1,41 @@
 #[link(name = "nvidia-ml")]
-use nvml_sys::bindings::nvmlBAR1Memory_t;
-use nvml_sys::bindings::nvmlClockType_enum_NVML_CLOCK_MEM;
-use nvml_sys::bindings::nvmlClockType_enum_NVML_CLOCK_SM;
-use nvml_sys::bindings::nvmlDeviceGetBAR1MemoryInfo;
-use nvml_sys::bindings::nvmlDeviceGetClockInfo;
-use nvml_sys::bindings::nvmlDeviceGetCudaComputeCapability;
-use nvml_sys::bindings::nvmlDeviceGetHandleByIndex_v2;
-use nvml_sys::bindings::nvmlDeviceGetMaxPcieLinkGeneration;
-use nvml_sys::bindings::nvmlDeviceGetMaxPcieLinkWidth;
-use nvml_sys::bindings::nvmlDeviceGetMemoryInfo;
-use nvml_sys::bindings::nvmlDeviceGetMinorNumber;
-use nvml_sys::bindings::nvmlDeviceGetName;
-use nvml_sys::bindings::nvmlDeviceGetPciInfo_v3;
-use nvml_sys::bindings::nvmlDeviceGetPowerManagementLimit;
-use nvml_sys::bindings::nvmlDeviceGetUUID;
-use nvml_sys::bindings::nvmlDevice_t;
-use nvml_sys::bindings::nvmlMemory_t;
-use nvml_sys::bindings::nvmlPciInfo_t;
-use nvml_sys::bindings::nvmlReturn_enum_NVML_ERROR_NOT_SUPPORTED;
-use nvml_sys::bindings::nvmlReturn_enum_NVML_SUCCESS;
-use nvml_sys::bindings::nvmlSystemGetDriverVersion;
-use nvml_sys::bindings::NVML_DEVICE_NAME_BUFFER_SIZE;
-use nvml_sys::bindings::NVML_DEVICE_UUID_BUFFER_SIZE;
-use nvml_sys::bindings::NVML_SYSTEM_DRIVER_VERSION_BUFFER_SIZE;
+use nvml_binding::bindings::nvmlBAR1Memory_t;
+use nvml_binding::bindings::nvmlClockType_enum_NVML_CLOCK_MEM;
+use nvml_binding::bindings::nvmlClockType_enum_NVML_CLOCK_SM;
+use nvml_binding::bindings::nvmlDeviceGetBAR1MemoryInfo;
+use nvml_binding::bindings::nvmlDeviceGetClockInfo;
+use nvml_binding::bindings::nvmlDeviceGetCudaComputeCapability;
+use nvml_binding::bindings::nvmlDeviceGetHandleByIndex_v2;
+use nvml_binding::bindings::nvmlDeviceGetMaxPcieLinkGeneration;
+use nvml_binding::bindings::nvmlDeviceGetMaxPcieLinkWidth;
+use nvml_binding::bindings::nvmlDeviceGetMemoryInfo;
+use nvml_binding::bindings::nvmlDeviceGetMinorNumber;
+use nvml_binding::bindings::nvmlDeviceGetName;
+use nvml_binding::bindings::nvmlDeviceGetPciInfo_v3;
+use nvml_binding::bindings::nvmlDeviceGetPowerManagementLimit;
+use nvml_binding::bindings::nvmlDeviceGetUUID;
+use nvml_binding::bindings::nvmlDevice_t;
+use nvml_binding::bindings::nvmlMemory_t;
+use nvml_binding::bindings::nvmlPciInfo_t;
+use nvml_binding::bindings::nvmlReturn_enum_NVML_ERROR_NOT_SUPPORTED;
+use nvml_binding::bindings::nvmlReturn_enum_NVML_SUCCESS;
+use nvml_binding::bindings::nvmlSystemGetDriverVersion;
+use nvml_binding::bindings::NVML_DEVICE_NAME_BUFFER_SIZE;
+use nvml_binding::bindings::NVML_DEVICE_UUID_BUFFER_SIZE;
+use nvml_binding::bindings::NVML_SYSTEM_DRIVER_VERSION_BUFFER_SIZE;
 
 // If you want to use the function of c as the callback function of rust,
 // the function type must be marked as unsafe extern "C"
 type ProcessOneInterger =
-    unsafe extern "C" fn(*mut nvml_sys::bindings::nvmlDevice_st, *mut u32) -> u32;
+    unsafe extern "C" fn(*mut nvml_binding::bindings::nvmlDevice_st, *mut u32) -> u32;
 
 pub struct NVML;
 
 impl NVML {
     pub fn new() -> Result<NVML, String> {
         unsafe {
-            let result = nvml_sys::bindings::nvmlInit_v2();
-            if result == nvml_sys::bindings::nvmlReturn_enum_NVML_ERROR_LIBRARY_NOT_FOUND {
+            let result = nvml_binding::bindings::nvmlInit_v2();
+            if result == nvml_binding::bindings::nvmlReturn_enum_NVML_ERROR_LIBRARY_NOT_FOUND {
                 return Err(format!("could not local NVML library"));
             }
             match result_error(result) {
@@ -48,8 +48,8 @@ impl NVML {
     pub fn device_get_count(&self) -> Result<u32, String> {
         unsafe {
             let mut n: ::std::os::raw::c_uint = 0;
-            let result = nvml_sys::bindings::nvmlDeviceGetCount_v2(&mut n as *mut u32);
-            if result == nvml_sys::bindings::nvmlReturn_enum_NVML_SUCCESS {
+            let result = nvml_binding::bindings::nvmlDeviceGetCount_v2(&mut n as *mut u32);
+            if result == nvml_binding::bindings::nvmlReturn_enum_NVML_SUCCESS {
                 return Ok(n as u32);
             }
             Err(result_error(result).unwrap())
@@ -77,17 +77,17 @@ impl NVML {
 impl Drop for NVML {
     fn drop(&mut self) {
         unsafe {
-            nvml_sys::bindings::nvmlShutdown();
+            nvml_binding::bindings::nvmlShutdown();
         }
     }
 }
 
-pub fn result_error(result: nvml_sys::bindings::nvmlReturn_t) -> Option<String> {
+pub fn result_error(result: nvml_binding::bindings::nvmlReturn_t) -> Option<String> {
     unsafe {
-        if result == nvml_sys::bindings::nvmlReturn_enum_NVML_SUCCESS {
+        if result == nvml_binding::bindings::nvmlReturn_enum_NVML_SUCCESS {
             return None;
         }
-        let ptr = nvml_sys::bindings::nvmlErrorString(result);
+        let ptr = nvml_binding::bindings::nvmlErrorString(result);
         let message = std::ffi::CStr::from_ptr(ptr).to_str().unwrap().to_owned();
         Some(message)
     }

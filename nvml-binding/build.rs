@@ -2,7 +2,7 @@ use std::path::PathBuf;
 
 fn main() {
     println!("cargo:rustc-cdylib-link-arg=-Wl,--unresolved-symbols=ignore-in-object-files");
-    println!("cargo:include=nvml-sys/include");
+    println!("cargo:include=nvml-binding/include");
     println!("cargo:rustc-link-lib=dylib=nvidia-ml");
 
     let library_directories = vec!["/usr/lib"];
