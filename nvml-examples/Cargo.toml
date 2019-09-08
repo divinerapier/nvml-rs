@@ -3,6 +3,13 @@ name = "nvml-examples"
 version = "0.1.0"
 authors = ["divinerapier <poriter.coco@gmail.com>"]
 edition = "2018"
+publish = true
+repository = "https://github.com/divinerapier/nvml-rs"
+description = "An example crate of nvml-rs"
+license = "Apache-2.0"
+categories = ["nvidia", "gpu"]
+keyworks = ["nvidia", "gpu"]
+include = ["*"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
