@@ -45,12 +45,12 @@ impl NVML {
         }
     }
 
-    pub fn device_get_count(&self) -> Result<i32, String> {
+    pub fn device_get_count(&self) -> Result<u32, String> {
         unsafe {
             let mut n: ::std::os::raw::c_uint = 0;
             let result = nvml_sys::bindings::nvmlDeviceGetCount_v2(&mut n as *mut u32);
             if result == nvml_sys::bindings::nvmlReturn_enum_NVML_SUCCESS {
-                return Ok(n as i32);
+                return Ok(n as u32);
             }
             Err(result_error(result).unwrap())
         }
@@ -124,7 +124,7 @@ pub enum P2PLinkType {
     FiveNVLINKLinks = 11,
     SixNVLINKLinks = 12,
 }
-
+#[derive(Debug)]
 pub struct CudaComputeCapabilityInfo {
     pub major: u64,
     pub minor: u64,
@@ -135,9 +135,9 @@ pub struct Device {
     pub uuid: String,
     pub path: String,
     pub model: String,
-    pub power: Option<u64>,
-    pub memory: Option<u64>,
-    pub cpu_affinity: Option<u64>,
+    pub power: u64,
+    pub memory: u64,
+    pub cpu_affinity: u64,
     pub pci: PCIInfo,
     pub clocks: ClockInfo,
     pub topology: Vec<i8>,
@@ -164,9 +164,9 @@ impl Device {
             uuid,
             path: format!("/dev/nvidia{}", minor_count),
             model,
-            power: Some(power),
-            memory: Some(memory_info.total),
-            cpu_affinity: Some(0),
+            power: power,
+            memory: memory_info.total,
+            cpu_affinity: node,
             pci: PCIInfo {
                 bus_id,
                 bar1,
@@ -182,14 +182,11 @@ impl Device {
         let filepath = format!("/sys/bus/pci/devices/{}/numa_node", bus_id.to_lowercase());
         match std::fs::read_to_string(&filepath) {
             Ok(content) => match content.parse() {
-                Ok(node) => {
-                    return Ok(node);
-                }
-                Err(e) => return Err(format!("{}", e)),
+                Ok(node) => Ok(node),
+                Err(e) => Err(format!("{}", e)),
             },
-            Err(e) => return Err(format!("{}", e)),
-        };
-        Ok(0)
+            Err(_) => Ok(0),
+        }
     }
     fn pci_bandwidth(gen: u64, width: u64) -> u64 {
         width
