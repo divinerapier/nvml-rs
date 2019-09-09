@@ -9,7 +9,7 @@ description = "An rust wrapper of libnvidia-ml"
 license = "Apache-2.0"
 categories = ["nvidia", "gpu"]
 keyworks = ["nvidia", "gpu"]
-include = ["*"]
+include = ["include", "src", "build.rs", "Cargo.toml", "LICENSE"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 

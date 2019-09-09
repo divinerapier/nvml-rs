@@ -9,7 +9,7 @@ description = "An example crate of nvml-rs"
 license = "Apache-2.0"
 categories = ["nvidia", "gpu"]
 keyworks = ["nvidia", "gpu"]
-include = ["*"]
+include = ["src", "Cargo.toml", "LICENSE"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
