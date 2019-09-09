@@ -1,11 +1,11 @@
 fn main() {
-    let driver = nvml::NVML::new().unwrap();
+    let driver = nvml_rs::NVML::new().unwrap();
     let count = driver.device_get_count().unwrap();
     let version = driver.nvml_system_get_driver_version().unwrap();
     println!("version = {}", version);
 
     for i in 0..count {
-        match nvml::Device::new(i) {
+        match nvml_rs::Device::new(i) {
             Ok(device) => {
                 println!("UUID: {}", device.uuid);
                 println!("Model: {}", device.model);
