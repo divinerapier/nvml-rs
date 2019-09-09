@@ -14,4 +14,4 @@ include = ["src", "Cargo.toml", "LICENSE"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-nvml = {path = "../", version = "0.1.0"}
+nvml-rs = {path = "../", version = "0.1.0"}

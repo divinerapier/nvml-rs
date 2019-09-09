@@ -1,5 +1,5 @@
 [package]
-name = "nvml"
+name = "nvml-rs"
 version = "0.1.0"
 authors = ["divinerapier <poriter.coco@gmail.com>"]
 edition = "2018"
@@ -20,4 +20,5 @@ nvml-binding = {path = "nvml-binding", version = "0.1.0"}
 [workspace]
 members = [
     "nvml-binding",
+    "nvml-examples",
 ]
