@@ -1,7 +1,7 @@
 fn main() {
     let driver = nvml_rs::NVML::new().unwrap();
-    let count = driver.device_get_count().unwrap();
-    let version = driver.nvml_system_get_driver_version().unwrap();
+    let count = driver.device_count().unwrap();
+    let version = driver.driver_version().unwrap();
     println!("version = {}", version);
 
     for i in 0..count {
@@ -20,8 +20,18 @@ fn main() {
                 println!("Cores: {}", device.clocks.cores);
                 println!("Memory: {}", device.clocks.memory);
                 println!("P2P Available: {:?}", device.topology);
+                println!(
+                    "GPU Temperature: {:?}",
+                    device.get_temperature(nvml_rs::DeviceSensorType::GPU)
+                );
+                println!(
+                    "COUNT Temperature: {:?}",
+                    device.get_temperature(nvml_rs::DeviceSensorType::COUNT)
+                );
             }
-            Err(message) => println!("error message: {}", message),
+            Err(message) => println!("error message: {:?}", message),
         }
     }
+    let unit_count = driver.unit_count().unwrap();
+    println!("Unit Count: {}", unit_count);
 }
